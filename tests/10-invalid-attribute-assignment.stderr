@@ -1,0 +1,5 @@
+error: expected `=`
+  --> tests/10-invalid-attribute-assignment.rs:10:7
+   |
+10 |     #[builder(eac)]
+   |       ^^^^^^^^^^^^

@@ -5,13 +5,11 @@ on:
     branches: [ "main" ]
   pull_request:
     branches: [ "main" ]
-
   workflow_dispatch:
 
 jobs:
-  build:
+  test:
     runs-on: ubuntu-latest
-
     steps:
       - uses: actions/checkout@v4
 
@@ -19,4 +17,13 @@ jobs:
         uses: dtolnay/rust-toolchain@stable
 
       - name: Run Tests
-        run: cargo test
+        run: cargo test 2>&1 | tee test_output.txt
+
+      - name: Generate Summary
+        if: always()
+        run: |
+          echo "### Test Results" >> $GITHUB_STEP_SUMMARY
+          echo '```text' >> $GITHUB_STEP_SUMMARY
+          # Filter for the specific lines you want (the test names and the result)
+          grep -E "test tests/.* \.\.\. ok|test result:" test_output.txt >> $GITHUB_STEP_SUMMARY
+          echo '```' >> $GITHUB_STEP_SUMMARY
